@@ -193,10 +193,8 @@
     wrap.appendChild(summary)
 
     const backBtn = document.createElement("button")
-    backBtn.className = "nav-btn nav-back"
+    backBtn.className = "nav-btn nav-back done-back"
     backBtn.textContent = "Tilbake til start"
-    backBtn.style.marginTop = "14px"
-    backBtn.style.width = "100%"
     backBtn.addEventListener("click", () => {
       currentStep = 0
       renderStep()

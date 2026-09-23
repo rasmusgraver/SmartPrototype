@@ -1,4 +1,4 @@
-const CACHE_NAME = "matvaner-v4"
+const CACHE_NAME = "matvaner-v5"
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -8,6 +8,8 @@ const APP_SHELL = [
   "./icon.svg",
   "./iphone_transparent2.png",
 ]
+
+const OFFLINE_NAV = "./index.html"
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -48,6 +50,15 @@ self.addEventListener("fetch", (event) => {
         }
         return networkResponse
       })
-      .catch(() => caches.match(event.request)),
+      .catch(() =>
+        caches.match(event.request).then((cached) => {
+          if (cached) return cached
+          // Navigasjons-fallback: vis app-skall når siden ikke ligger i cachen
+          if (event.request.mode === "navigate") {
+            return caches.match(OFFLINE_NAV)
+          }
+          return undefined
+        }),
+      ),
   )
 })
