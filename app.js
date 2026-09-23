@@ -165,15 +165,32 @@
     const wrap = document.createElement("div")
     wrap.className = "done-screen"
 
-    wrap.innerHTML = `
-  <div class="done-icon">✓</div>
-  <div class="done-title">Takk for svarene!</div>
-  <div class="summary-box">
-    <div><b>Hvor ofte:</b> ${answers.frekvens || "-"}</div>
-    <div><b>Måltider:</b> ${(answers.maltider || []).join(", ") || "-"}</div>
-    <div><b>Favorittmat:</b> ${answers.favorittmat || "-"}</div>
-  </div>
-`
+    const icon = document.createElement("div")
+    icon.className = "done-icon"
+    icon.textContent = "✓"
+    wrap.appendChild(icon)
+
+    const title = document.createElement("div")
+    title.className = "done-title"
+    title.textContent = "Takk for svarene!"
+    wrap.appendChild(title)
+
+    const summary = document.createElement("div")
+    summary.className = "summary-box"
+
+    const addSummaryRow = (label, value) => {
+      const row = document.createElement("div")
+      const labelElement = document.createElement("b")
+      labelElement.textContent = `${label}: `
+      row.appendChild(labelElement)
+      row.appendChild(document.createTextNode(value || "-"))
+      summary.appendChild(row)
+    }
+
+    addSummaryRow("Hvor ofte", answers.frekvens)
+    addSummaryRow("Måltider", (answers.maltider || []).join(", "))
+    addSummaryRow("Favorittmat", answers.favorittmat)
+    wrap.appendChild(summary)
 
     const backBtn = document.createElement("button")
     backBtn.className = "nav-btn nav-back"
