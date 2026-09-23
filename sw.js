@@ -1,7 +1,8 @@
-const CACHE_NAME = "matvaner-v1"
+const CACHE_NAME = "matvaner-v2"
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./style.css",
   "./manifest.webmanifest",
   "./icon.svg",
   "./iphone_transparent2.png",
