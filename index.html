@@ -1,409 +1,450 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="no">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>App-prototype: Matvaner</title>
-<style>
-  :root {
-    --bg: #f2f2f4;
-    --accent: #2f6f4f;
-    --accent-dark: #234f38;
-    --text: #1c1c1e;
-    --muted: #7a7a7f;
-    --card: #ffffff;
-    --choice-border: #e0e0e2;
-  }
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: var(--bg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-  }
-
-  .stage {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    padding: 40px 20px;
-  }
-
-  .stage h1 {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--muted);
-    margin: 0;
-    letter-spacing: 0.02em;
-  }
-
-  /* --- Telefon-ramme --- */
-  .phone-wrapper {
-    position: relative;
-    width: 320px;         /* skaler denne for å endre størrelsen på hele telefonen */
-    aspect-ratio: 960 / 1920;
-  }
-
-  .phone-frame {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    user-select: none;
-    z-index: 2;            /* rammen ligger OVER app-skjermen, slik at hjørnene skjuler kantene */
-  }
-
-  /* Skjermområdet er målt fra PNG-en: ca 10.4% - 90% (x) og 15% - 85.8% (y) */
-  .app-screen {
-    position: absolute;
-    top: 15%;
-    left: 10.4%;
-    width: 79.6%;
-    height: 70.8%;
-    background: var(--card);
-    overflow: hidden;
-    border-radius: 4px;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* --- App-innhold --- */
-  #app-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 7% 6% 4%;
-    overflow-y: auto;
-  }
-
-  .progress-dots {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    margin-bottom: 14%;
-  }
-  .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--choice-border);
-    transition: background 0.2s;
-  }
-  .dot.active { background: var(--accent); }
-  .dot.done { background: var(--accent); opacity: 0.4; }
-
-  .question-title {
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1.35;
-    margin: 0 0 6%;
-    text-align: center;
-  }
-
-  .choices {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 6%;
-  }
-
-  .choice-btn {
-    border: 1.5px solid var(--choice-border);
-    background: var(--card);
-    color: var(--text);
-    padding: 10px 8px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 500;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .choice-btn:hover { border-color: var(--accent); }
-  .choice-btn.selected {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
-
-  .text-input {
-    border: 1.5px solid var(--choice-border);
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 12px;
-    font-family: inherit;
-    resize: none;
-    min-height: 70px;
-    margin-bottom: 6%;
-  }
-  .text-input:focus { outline: none; border-color: var(--accent); }
-
-  .hint {
-    font-size: 10px;
-    color: var(--muted);
-    text-align: center;
-    margin-bottom: 6%;
-  }
-
-  .spacer { flex: 1; }
-
-  .nav-row {
-    display: flex;
-    gap: 8px;
-    margin-top: auto;
-  }
-
-  .nav-btn {
-    flex: 1;
-    padding: 10px 0;
-    border-radius: 10px;
-    border: none;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-
-  .nav-back {
-    background: #eceff1;
-    color: var(--text);
-  }
-  .nav-next {
-    background: var(--accent);
-    color: white;
-  }
-  .nav-next:hover:not(:disabled) { background: var(--accent-dark); }
-
-  /* Ferdig-skjerm */
-  .done-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    flex: 1;
-    gap: 10px;
-  }
-  .done-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    margin-bottom: 4px;
-  }
-  .done-title { font-size: 15px; font-weight: 600; }
-  .summary-box {
-    width: 100%;
-    text-align: left;
-    background: var(--bg);
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 10.5px;
-    line-height: 1.6;
-    margin-top: 10px;
-  }
-  .summary-box b { color: var(--accent-dark); }
-
-  footer {
-    font-size: 11px;
-    color: var(--muted);
-    text-align: center;
-    max-width: 320px;
-  }
-</style>
-</head>
-<body>
-
-<div class="stage">
-  <h1>App-prototype </h1>
-
-  <div class="phone-wrapper">
-    <img class="phone-frame" src="iphone_transparent2.png" >
-    <div class="app-screen">
-      <div id="app-content"><!-- rendres av JS --></div>
-    </div>
-  </div>
-
- 
-</div>
-
-<script>
-(function() {
-  // --- Datamodell: spørsmålene i skjemaet ---
-  const steps = [
-    {
-      id: "frekvens",
-      type: "choice",
-      multi: false,
-      title: "Hvor ofte spiser du i løpet av en dag?",
-      options: ["1–2 ganger", "3–4 ganger", "5 eller flere ganger"]
-    },
-    {
-      id: "maltider",
-      type: "choice",
-      multi: true,
-      title: "Hvilke måltider spiser du vanligvis?",
-      options: ["Frokost", "Lunsj", "Middag", "Kveldsmat", "Mellommåltider"]
-    },
-    {
-      id: "favorittmat",
-      type: "text",
-      title: "Hva er favorittmaten din?",
-      placeholder: "Skriv svaret ditt her..."
-    }
-  ];
-
-  // --- State ---
-  let currentStep = 0;
-  const answers = {}; // holdes kun i minnet, ikke lagret noe sted
-
-  const content = document.getElementById("app-content");
-
-  function renderStep() {
-    if (currentStep >= steps.length) {
-      renderDone();
-      return;
-    }
-
-    const step = steps[currentStep];
-    content.innerHTML = "";
-
-    // Fremdriftsprikker
-    const dots = document.createElement("div");
-    dots.className = "progress-dots";
-    steps.forEach((s, i) => {
-      const d = document.createElement("div");
-      d.className = "dot" + (i === currentStep ? " active" : i < currentStep ? " done" : "");
-      dots.appendChild(d);
-    });
-    content.appendChild(dots);
-
-    // Spørsmålstittel
-    const title = document.createElement("p");
-    title.className = "question-title";
-    title.textContent = step.title;
-    content.appendChild(title);
-
-    if (step.type === "choice") {
-      const wrap = document.createElement("div");
-      wrap.className = "choices";
-
-      if (step.multi) {
-        const hint = document.createElement("div");
-        hint.className = "hint";
-        hint.textContent = "Du kan velge flere";
-        content.appendChild(hint);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>App-prototype: Matvaner</title>
+    <style>
+      :root {
+        --bg: #f2f2f4;
+        --accent: #2f6f4f;
+        --accent-dark: #234f38;
+        --text: #1c1c1e;
+        --muted: #7a7a7f;
+        --card: #ffffff;
+        --choice-border: #e0e0e2;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
       }
 
-      const selected = answers[step.id] || (step.multi ? [] : null);
+      .stage {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        padding: 40px 20px;
+      }
 
-      step.options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.className = "choice-btn";
-        btn.textContent = opt;
+      .stage h1 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--muted);
+        margin: 0;
+        letter-spacing: 0.02em;
+      }
 
-        const isSelected = step.multi ? selected.includes(opt) : selected === opt;
-        if (isSelected) btn.classList.add("selected");
+      /* --- Telefon-ramme --- */
+      .phone-wrapper {
+        position: relative;
+        width: 320px; /* skaler denne for å endre størrelsen på hele telefonen */
+        aspect-ratio: 960 / 1920;
+      }
 
-        btn.addEventListener("click", () => {
-          if (step.multi) {
-            const current = answers[step.id] || [];
-            const idx = current.indexOf(opt);
-            if (idx > -1) current.splice(idx, 1);
-            else current.push(opt);
-            answers[step.id] = current;
-          } else {
-            answers[step.id] = opt;
+      .phone-frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        user-select: none;
+        z-index: 2; /* rammen ligger OVER app-skjermen, slik at hjørnene skjuler kantene */
+      }
+
+      /* Skjermområdet er målt fra PNG-en: ca 10.4% - 90% (x) og 15% - 85.8% (y) */
+      .app-screen {
+        position: absolute;
+        top: 15%;
+        left: 10.4%;
+        width: 79.6%;
+        height: 70.8%;
+        background: var(--card);
+        overflow: hidden;
+        border-radius: 4px;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* --- App-innhold --- */
+      #app-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 7% 6% 4%;
+        overflow-y: auto;
+      }
+
+      .progress-dots {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        margin-bottom: 14%;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--choice-border);
+        transition: background 0.2s;
+      }
+      .dot.active {
+        background: var(--accent);
+      }
+      .dot.done {
+        background: var(--accent);
+        opacity: 0.4;
+      }
+
+      .question-title {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.35;
+        margin: 0 0 6%;
+        text-align: center;
+      }
+
+      .choices {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 6%;
+      }
+
+      .choice-btn {
+        border: 1.5px solid var(--choice-border);
+        background: var(--card);
+        color: var(--text);
+        padding: 10px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 500;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .choice-btn:hover {
+        border-color: var(--accent);
+      }
+      .choice-btn.selected {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+
+      .text-input {
+        border: 1.5px solid var(--choice-border);
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 12px;
+        font-family: inherit;
+        resize: none;
+        min-height: 70px;
+        margin-bottom: 6%;
+      }
+      .text-input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .hint {
+        font-size: 10px;
+        color: var(--muted);
+        text-align: center;
+        margin-bottom: 6%;
+      }
+
+      .spacer {
+        flex: 1;
+      }
+
+      .nav-row {
+        display: flex;
+        gap: 8px;
+        margin-top: auto;
+      }
+
+      .nav-btn {
+        flex: 1;
+        padding: 10px 0;
+        border-radius: 10px;
+        border: none;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .nav-back {
+        background: #eceff1;
+        color: var(--text);
+      }
+      .nav-next {
+        background: var(--accent);
+        color: white;
+      }
+      .nav-next:hover:not(:disabled) {
+        background: var(--accent-dark);
+      }
+
+      /* Ferdig-skjerm */
+      .done-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        flex: 1;
+        gap: 10px;
+      }
+      .done-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 4px;
+      }
+      .done-title {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .summary-box {
+        width: 100%;
+        text-align: left;
+        background: var(--bg);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 10.5px;
+        line-height: 1.6;
+        margin-top: 10px;
+      }
+      .summary-box b {
+        color: var(--accent-dark);
+      }
+
+      footer {
+        font-size: 11px;
+        color: var(--muted);
+        text-align: center;
+        max-width: 320px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <h1>App-prototype</h1>
+
+      <div class="phone-wrapper">
+        <img class="phone-frame" src="iphone_transparent2.png" />
+        <div class="app-screen">
+          <div id="app-content"><!-- rendres av JS --></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      ;(function () {
+        // --- Datamodell: spørsmålene i skjemaet ---
+        const steps = [
+          {
+            id: "frekvens",
+            type: "choice",
+            multi: false,
+            title: "Hvor ofte spiser du i løpet av en dag?",
+            options: ["1–2 ganger", "3–4 ganger", "5 eller flere ganger"],
+          },
+          {
+            id: "maltider",
+            type: "choice",
+            multi: true,
+            title: "Hvilke måltider spiser du vanligvis?",
+            options: [
+              "Frokost",
+              "Lunsj",
+              "Middag",
+              "Kveldsmat",
+              "Mellommåltider",
+            ],
+          },
+          {
+            id: "favorittmat",
+            type: "text",
+            title: "Hva er favorittmaten din?",
+            placeholder: "Skriv svaret ditt her...",
+          },
+        ]
+
+        // --- State ---
+        let currentStep = 0
+        const answers = {} // holdes kun i minnet, ikke lagret noe sted
+
+        const content = document.getElementById("app-content")
+
+        function renderStep() {
+          if (currentStep >= steps.length) {
+            renderDone()
+            return
           }
-          renderStep();
-        });
 
-        wrap.appendChild(btn);
-      });
+          const step = steps[currentStep]
+          content.innerHTML = ""
 
-      content.appendChild(wrap);
-    }
+          // Fremdriftsprikker
+          const dots = document.createElement("div")
+          dots.className = "progress-dots"
+          steps.forEach((s, i) => {
+            const d = document.createElement("div")
+            d.className =
+              "dot" +
+              (i === currentStep ? " active" : i < currentStep ? " done" : "")
+            dots.appendChild(d)
+          })
+          content.appendChild(dots)
 
-    if (step.type === "text") {
-      const textarea = document.createElement("textarea");
-      textarea.className = "text-input";
-      textarea.placeholder = step.placeholder || "";
-      textarea.value = answers[step.id] || "";
-      textarea.addEventListener("input", (e) => {
-        answers[step.id] = e.target.value;
-        updateNextButtonState();
-      });
-      content.appendChild(textarea);
-    }
+          // Spørsmålstittel
+          const title = document.createElement("p")
+          title.className = "question-title"
+          title.textContent = step.title
+          content.appendChild(title)
 
-    content.appendChild(Object.assign(document.createElement("div"), { className: "spacer" }));
+          if (step.type === "choice") {
+            const wrap = document.createElement("div")
+            wrap.className = "choices"
 
-    // Navigasjon
-    const navRow = document.createElement("div");
-    navRow.className = "nav-row";
+            if (step.multi) {
+              const hint = document.createElement("div")
+              hint.className = "hint"
+              hint.textContent = "Du kan velge flere"
+              content.appendChild(hint)
+            }
 
-    const backBtn = document.createElement("button");
-    backBtn.className = "nav-btn nav-back";
-    backBtn.textContent = "Tilbake";
-    backBtn.disabled = currentStep === 0;
-    backBtn.addEventListener("click", () => {
-      currentStep--;
-      renderStep();
-    });
+            const selected = answers[step.id] || (step.multi ? [] : null)
 
-    const nextBtn = document.createElement("button");
-    nextBtn.className = "nav-btn nav-next";
-    nextBtn.id = "next-btn";
-    nextBtn.textContent = currentStep === steps.length - 1 ? "Fullfør" : "Neste";
-    nextBtn.addEventListener("click", () => {
-      currentStep++;
-      renderStep();
-    });
+            step.options.forEach((opt) => {
+              const btn = document.createElement("button")
+              btn.className = "choice-btn"
+              btn.textContent = opt
 
-    navRow.appendChild(backBtn);
-    navRow.appendChild(nextBtn);
-    content.appendChild(navRow);
+              const isSelected = step.multi
+                ? selected.includes(opt)
+                : selected === opt
+              if (isSelected) btn.classList.add("selected")
 
-    updateNextButtonState();
-  }
+              btn.addEventListener("click", () => {
+                if (step.multi) {
+                  const current = answers[step.id] || []
+                  const idx = current.indexOf(opt)
+                  if (idx > -1) current.splice(idx, 1)
+                  else current.push(opt)
+                  answers[step.id] = current
+                } else {
+                  answers[step.id] = opt
+                }
+                renderStep()
+              })
 
-  function updateNextButtonState() {
-    const step = steps[currentStep];
-    const nextBtn = document.getElementById("next-btn");
-    if (!nextBtn) return;
+              wrap.appendChild(btn)
+            })
 
-    let answered = false;
-    if (step.type === "choice") {
-      const a = answers[step.id];
-      answered = step.multi ? (a && a.length > 0) : !!a;
-    } else if (step.type === "text") {
-      answered = !!(answers[step.id] && answers[step.id].trim().length > 0);
-    }
-    nextBtn.disabled = !answered;
-  }
+            content.appendChild(wrap)
+          }
 
-  function renderDone() {
-    content.innerHTML = "";
+          if (step.type === "text") {
+            const textarea = document.createElement("textarea")
+            textarea.className = "text-input"
+            textarea.placeholder = step.placeholder || ""
+            textarea.value = answers[step.id] || ""
+            textarea.addEventListener("input", (e) => {
+              answers[step.id] = e.target.value
+              updateNextButtonState()
+            })
+            content.appendChild(textarea)
+          }
 
-    const wrap = document.createElement("div");
-    wrap.className = "done-screen";
+          content.appendChild(
+            Object.assign(document.createElement("div"), {
+              className: "spacer",
+            }),
+          )
 
-    wrap.innerHTML = `
+          // Navigasjon
+          const navRow = document.createElement("div")
+          navRow.className = "nav-row"
+
+          const backBtn = document.createElement("button")
+          backBtn.className = "nav-btn nav-back"
+          backBtn.textContent = "Tilbake"
+          backBtn.disabled = currentStep === 0
+          backBtn.addEventListener("click", () => {
+            currentStep--
+            renderStep()
+          })
+
+          const nextBtn = document.createElement("button")
+          nextBtn.className = "nav-btn nav-next"
+          nextBtn.id = "next-btn"
+          nextBtn.textContent =
+            currentStep === steps.length - 1 ? "Fullfør" : "Neste"
+          nextBtn.addEventListener("click", () => {
+            currentStep++
+            renderStep()
+          })
+
+          navRow.appendChild(backBtn)
+          navRow.appendChild(nextBtn)
+          content.appendChild(navRow)
+
+          updateNextButtonState()
+        }
+
+        function updateNextButtonState() {
+          const step = steps[currentStep]
+          const nextBtn = document.getElementById("next-btn")
+          if (!nextBtn) return
+
+          let answered = false
+          if (step.type === "choice") {
+            const a = answers[step.id]
+            answered = step.multi ? a && a.length > 0 : !!a
+          } else if (step.type === "text") {
+            answered = !!(
+              answers[step.id] && answers[step.id].trim().length > 0
+            )
+          }
+          nextBtn.disabled = !answered
+        }
+
+        function renderDone() {
+          content.innerHTML = ""
+
+          const wrap = document.createElement("div")
+          wrap.className = "done-screen"
+
+          wrap.innerHTML = `
       <div class="done-icon">✓</div>
       <div class="done-title">Takk for svarene!</div>
       <div class="summary-box">
@@ -411,25 +452,24 @@
         <div><b>Måltider:</b> ${(answers.maltider || []).join(", ") || "-"}</div>
         <div><b>Favorittmat:</b> ${answers.favorittmat || "-"}</div>
       </div>
-    `;
+    `
 
-    const backBtn = document.createElement("button");
-    backBtn.className = "nav-btn nav-back";
-    backBtn.textContent = "Tilbake til start";
-    backBtn.style.marginTop = "14px";
-    backBtn.style.width = "100%";
-    backBtn.addEventListener("click", () => {
-      currentStep = 0;
-      renderStep();
-    });
-    wrap.appendChild(backBtn);
+          const backBtn = document.createElement("button")
+          backBtn.className = "nav-btn nav-back"
+          backBtn.textContent = "Tilbake til start"
+          backBtn.style.marginTop = "14px"
+          backBtn.style.width = "100%"
+          backBtn.addEventListener("click", () => {
+            currentStep = 0
+            renderStep()
+          })
+          wrap.appendChild(backBtn)
 
-    content.appendChild(wrap);
-  }
+          content.appendChild(wrap)
+        }
 
-  renderStep();
-})();
-</script>
-
-</body>
+        renderStep()
+      })()
+    </script>
+  </body>
 </html>
