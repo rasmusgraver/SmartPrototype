@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.05, maximum-scale=1.05, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>App-prototype: Matvaner</title>
     <meta name="theme-color" content="#2f6f4f" />
@@ -35,6 +35,7 @@
       body {
         margin: 0;
         padding: 0;
+        width: 100%;
         background: var(--bg);
         font-family:
           -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
@@ -98,7 +99,8 @@
 
       @media (max-width: 600px) {
         .stage {
-          width: 100vw;
+          width: 100%;
+          max-width: 100%;
           height: 100vh;
           padding: 0;
         }
@@ -108,7 +110,8 @@
         }
 
         .phone-wrapper {
-          width: 100vw;
+          width: 100%;
+          max-width: 100%;
           height: 100vh;
           aspect-ratio: auto;
         }
