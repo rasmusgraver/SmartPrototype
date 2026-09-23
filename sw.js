@@ -1,4 +1,4 @@
-const CACHE_NAME = "matvaner-v3"
+const CACHE_NAME = "matvaner-v4"
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -34,9 +34,20 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return
 
+  const requestUrl = new URL(event.request.url)
+  if (requestUrl.origin !== self.location.origin) return
+
   event.respondWith(
-    caches
-      .match(event.request)
-      .then((cachedResponse) => cachedResponse || fetch(event.request)),
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse.ok) {
+          const responseToCache = networkResponse.clone()
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache)
+          })
+        }
+        return networkResponse
+      })
+      .catch(() => caches.match(event.request)),
   )
 })
