@@ -81,6 +81,36 @@
         flex-direction: column;
       }
 
+      @media (max-width: 600px) {
+        .stage {
+          width: 100vw;
+          height: 100vh;
+          padding: 0;
+        }
+
+        .stage h1 {
+          display: none;
+        }
+
+        .phone-wrapper {
+          width: 100vw;
+          height: 100vh;
+          aspect-ratio: auto;
+        }
+
+        .phone-frame {
+          display: none;
+        }
+
+        .app-screen {
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: 0;
+        }
+      }
+
       /* --- App-innhold --- */
       #app-content {
         flex: 1;
