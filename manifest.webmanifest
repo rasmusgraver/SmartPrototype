@@ -1,18 +1,19 @@
 {
-  "name": "Matvaner",
-  "short_name": "Matvaner",
-  "description": "Et enkelt spørreskjema om matvaner.",
+  "id": "./",
+  "name": "SmartPrototype",
+  "short_name": "SmartPrototype",
+  "description": "En prototype for robot- og droneassistanse.",
   "lang": "no",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#2f6f4f",
-  "background_color": "#f2f2f4",
+  "theme_color": "#f6f2e7",
+  "background_color": "#f6f2e7",
   "icons": [
     {
       "src": "icon.svg",
-      "sizes": "any",
+      "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "matvaner-v5"
+const CACHE_NAME = "smartprototype-v6"
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,6 +6,10 @@ const APP_SHELL = [
   "./app.js",
   "./manifest.webmanifest",
   "./icon.svg",
+  "./bilder/iphone.png",
+  "./bilder/logo.png",
+  "./bilder/robot.jpeg",
+  "./bilder/drone.jpeg",
 ]
 
 const OFFLINE_NAV = "./index.html"
