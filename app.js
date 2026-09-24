@@ -74,27 +74,37 @@
 
   const content = document.getElementById("app-content")
   let currentPage = 0
+  let voiceAudioContext = null
 
   function playVoicePreview(frequency) {
-    const AudioContext = window.AudioContext || window.webkitAudioContext
-    if (!AudioContext) return
+    const AudioContextConstructor =
+      window.AudioContext || window.webkitAudioContext
+    if (!AudioContextConstructor) return
 
-    const audioContext = new AudioContext()
-    const oscillator = audioContext.createOscillator()
-    const gain = audioContext.createGain()
-    const startTime = audioContext.currentTime
+    if (!voiceAudioContext || voiceAudioContext.state === "closed") {
+      voiceAudioContext = new AudioContextConstructor()
+    }
 
-    oscillator.type = "sine"
-    oscillator.frequency.value = frequency
-    gain.gain.setValueAtTime(0.08, startTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.16)
-    oscillator.connect(gain)
-    gain.connect(audioContext.destination)
-    oscillator.start(startTime)
-    oscillator.stop(startTime + 0.16)
-    oscillator.addEventListener("ended", () => audioContext.close(), {
-      once: true,
-    })
+    const playTone = () => {
+      const oscillator = voiceAudioContext.createOscillator()
+      const gain = voiceAudioContext.createGain()
+      const startTime = voiceAudioContext.currentTime
+
+      oscillator.type = "sine"
+      oscillator.frequency.value = frequency
+      gain.gain.setValueAtTime(0.08, startTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.16)
+      oscillator.connect(gain)
+      gain.connect(voiceAudioContext.destination)
+      oscillator.start(startTime)
+      oscillator.stop(startTime + 0.16)
+    }
+
+    const resumeAudio =
+      voiceAudioContext.state === "running"
+        ? Promise.resolve()
+        : voiceAudioContext.resume()
+    resumeAudio.then(playTone).catch(() => {})
   }
 
   function renderNav(activeIndex) {
