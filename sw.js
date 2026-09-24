@@ -1,4 +1,4 @@
-const CACHE_NAME = "friendly-helpers-v8"
+const CACHE_NAME = "friendly-helpers-v9"
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -10,6 +10,10 @@ const APP_SHELL = [
   "./bilder/robot.jpeg",
   "./bilder/drone.jpeg",
   "./bilder/smartPromo.mp4",
+  "./bilder/icon-192.png",
+  "./bilder/icon-512.png",
+  "./bilder/icon-maskable-512.png",
+  "./bilder/apple-touch-icon.png",
 ]
 
 const OFFLINE_NAV = "./index.html"

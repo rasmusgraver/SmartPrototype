@@ -66,7 +66,7 @@
       description: "Her kan du se hvilke eventer du kan være med på.",
       highlights: [
         "Tivoli: fre.13.11 kl.8–18",
-        "Pensjonist treff: Man.12.11 kl.2",
+        "Pensjonist treff: man.12.11 kl.14",
         "Loppemarked: lør.10.11 kl.10–15",
       ],
     },

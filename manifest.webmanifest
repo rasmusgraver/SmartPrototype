@@ -12,10 +12,22 @@
   "background_color": "#f6f2e7",
   "icons": [
     {
-      "src": "bilder/logo.png",
-      "sizes": "892x826",
+      "src": "bilder/icon-192.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "bilder/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "bilder/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
