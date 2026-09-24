@@ -134,7 +134,6 @@
   }
 
   function renderPage() {
-    content.scrollTop = 0
     content.innerHTML = ""
     renderNav(currentPage)
 
