@@ -1,17 +1,14 @@
 :root {
   --bg: #f6f2e7;
   --accent: #2f6f4f;
-  --accent-dark: #234f38;
   --text: #1c1c1e;
   --muted: #111111;
-  --card: #ffffff;
   --choice-border: #e0e0e2;
 }
 * {
   box-sizing: border-box;
 }
-button,
-textarea {
+button {
   font: inherit;
 }
 html,
@@ -85,25 +82,6 @@ body {
   border-radius: 6px;
   padding: 4px;
   background: var(--bg);
-}
-
-.landing-screen {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  padding: 10px;
-}
-
-.landing-image {
-  display: block;
-  width: 100%;
-  max-width: 200px;
-  height: auto;
-  object-fit: contain;
-  cursor: pointer;
-  user-select: none;
 }
 
 .top-nav {
@@ -220,19 +198,6 @@ body {
   border-radius: 10px;
   background: #000;
   display: block;
-}
-
-.page-badge {
-  width: 58px;
-  height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #d3b765;
-  color: #111111;
-  font-size: 28px;
-  font-weight: 700;
 }
 
 .page-title {
@@ -549,171 +514,6 @@ body {
   padding: 0 12px;
 }
 
-.progress-dots {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  margin-bottom: 14%;
-}
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--choice-border);
-  transition: background 0.2s;
-}
-.dot.active {
-  background: var(--accent);
-}
-.dot.done {
-  background: var(--accent);
-  opacity: 0.4;
-}
-
-.question-title {
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.35;
-  margin: 0 0 6%;
-  text-align: center;
-}
-
-.choices {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 6%;
-}
-
-.choice-btn {
-  border: 1.5px solid var(--choice-border);
-  background: var(--card);
-  color: var(--text);
-  padding: 10px 8px;
-  border-radius: 10px;
-  font-weight: 500;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.choice-btn:hover {
-  border-color: var(--accent);
-}
-.choice-btn:focus-visible,
-.nav-btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-.choice-btn.selected {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: white;
-}
-
-.text-input {
-  border: 1.5px solid var(--choice-border);
-  border-radius: 10px;
-  padding: 10px;
-  font-family: inherit;
-  resize: none;
-  min-height: 70px;
-  margin-bottom: 6%;
-}
-.text-input:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-color: var(--accent);
-}
-
-.hint {
-  color: var(--muted);
-  text-align: center;
-  margin-bottom: 6%;
-}
-
-.spacer {
-  flex: 1;
-}
-
-.nav-row {
-  display: flex;
-  gap: 8px;
-  margin-top: auto;
-}
-
-.nav-btn {
-  flex: 1;
-  padding: 10px 0;
-  border-radius: 10px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.nav-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.nav-back {
-  background: #eceff1;
-  color: var(--text);
-}
-.nav-next {
-  background: var(--accent);
-  color: white;
-}
-.nav-next:hover:not(:disabled) {
-  background: var(--accent-dark);
-}
-
-/* Ferdig-skjerm */
-.done-screen {
-  display: flex;
-  padding-top: 50px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: start;
-  text-align: center;
-  flex: 1;
-  gap: 10px;
-}
-.done-screen .nav-btn {
-  flex: 0 0 auto;
-}
-.done-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  margin-bottom: 4px;
-}
-.done-title {
-  font-size: 15px;
-  font-weight: 600;
-}
-.summary-box {
-  width: 100%;
-  text-align: left;
-  background: var(--bg);
-  border-radius: 10px;
-  padding: 10px 12px;
-  line-height: 1.6;
-  margin-top: 10px;
-}
-.summary-box b {
-  color: var(--accent-dark);
-}
-.done-screen .nav-btn.done-back {
-  margin-top: 14px;
-  width: 100%;
-}
-
 @media (max-width: 600px) {
   .stage {
     width: 100%;
@@ -732,18 +532,5 @@ body {
     width: 100%;
     height: 100%;
     border-radius: 0;
-  }
-
-  .choice-btn,
-  .nav-btn {
-    padding: 12px 8px;
-  }
-
-  .text-input {
-    font-size: 16px;
-  }
-
-  .question-title {
-    font-size: 18px;
   }
 }
