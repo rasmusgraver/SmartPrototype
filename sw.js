@@ -6,7 +6,6 @@ const APP_SHELL = [
   "./app.js",
   "./manifest.webmanifest",
   "./icon.svg",
-  "./bilder/iphone.png",
   "./bilder/logo.png",
   "./bilder/robot.jpeg",
   "./bilder/drone.jpeg",

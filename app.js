@@ -26,9 +26,8 @@
       id: "info",
       navLabel: "Info",
       icon: "i",
-      title: "Info",
-      description:
-        "Her kan du lese litt om robotene:\nRobotene må lade en gang i uken i cirka en time.",
+      title: "Her kan du lese litt om robotene:",
+      description: "Robotene må lade en gang i uken i cirka en time.",
       additionalText: [
         "De burde ikke brukes for barn under 10 år uten voksne til stede.",
         "Eventene dine tilpasses etter interesser og alder.",
@@ -75,6 +74,28 @@
 
   const content = document.getElementById("app-content")
   let currentPage = 0
+
+  function playVoicePreview(frequency) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext
+    if (!AudioContext) return
+
+    const audioContext = new AudioContext()
+    const oscillator = audioContext.createOscillator()
+    const gain = audioContext.createGain()
+    const startTime = audioContext.currentTime
+
+    oscillator.type = "sine"
+    oscillator.frequency.value = frequency
+    gain.gain.setValueAtTime(0.08, startTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.16)
+    oscillator.connect(gain)
+    gain.connect(audioContext.destination)
+    oscillator.start(startTime)
+    oscillator.stop(startTime + 0.16)
+    oscillator.addEventListener("ended", () => audioContext.close(), {
+      once: true,
+    })
+  }
 
   function renderNav(activeIndex) {
     const nav = document.createElement("nav")
@@ -244,14 +265,49 @@
         const textLabel = document.createElement("span")
         textLabel.textContent = item
 
-        const textInput = document.createElement("input")
-        textInput.type = "text"
-        textInput.className = "profile-input"
-        textInput.setAttribute("aria-label", item)
-        textInput.placeholder = "Skriv inn"
-
         textOption.appendChild(textLabel)
-        textOption.appendChild(textInput)
+
+        if (item === "Farge:") {
+          const colorGroup = document.createElement("div")
+          colorGroup.className = "color-choice-group"
+          colorGroup.setAttribute("role", "radiogroup")
+          colorGroup.setAttribute("aria-label", "Velg farge")
+
+          const colors = [
+            ["Korall", "#e76f51"],
+            ["Blå", "#457b9d"],
+            ["Grønn", "#2a9d8f"],
+            ["Gul", "#e9c46a"],
+            ["Lilla", "#6d597a"],
+          ]
+
+          colors.forEach(([name, value]) => {
+            const colorButton = document.createElement("button")
+            colorButton.type = "button"
+            colorButton.className = "color-choice"
+            colorButton.style.backgroundColor = value
+            colorButton.setAttribute("aria-label", name)
+            colorButton.setAttribute("aria-pressed", "false")
+            colorButton.addEventListener("click", () => {
+              colorGroup.querySelectorAll(".color-choice").forEach((button) => {
+                button.classList.remove("active")
+                button.setAttribute("aria-pressed", "false")
+              })
+              colorButton.classList.add("active")
+              colorButton.setAttribute("aria-pressed", "true")
+            })
+            colorGroup.appendChild(colorButton)
+          })
+
+          textOption.appendChild(colorGroup)
+        } else {
+          const textInput = document.createElement("input")
+          textInput.type = "text"
+          textInput.className = "profile-input"
+          textInput.setAttribute("aria-label", item)
+          textInput.placeholder = "Skriv inn"
+          textOption.appendChild(textInput)
+        }
         robotFields.appendChild(textOption)
       })
 
@@ -278,6 +334,43 @@
       droneField.appendChild(droneInput)
       robotContent.appendChild(droneHeading)
       robotContent.appendChild(droneField)
+
+      const voiceHeading = document.createElement("h3")
+      voiceHeading.className = "voice-heading"
+      voiceHeading.textContent = "Stemme:"
+
+      const voiceGroup = document.createElement("div")
+      voiceGroup.className = "voice-choice-group"
+      voiceGroup.setAttribute("role", "radiogroup")
+      voiceGroup.setAttribute("aria-label", "Velg stemmevolum")
+
+      const voiceOptions = [
+        ["Lav lyd", "🔈", 330],
+        ["Middels lyd", "🔉", 520],
+        ["Høy lyd", "🔊", 760],
+      ]
+
+      voiceOptions.forEach(([name, icon, frequency]) => {
+        const voiceButton = document.createElement("button")
+        voiceButton.type = "button"
+        voiceButton.className = "voice-choice"
+        voiceButton.textContent = icon
+        voiceButton.setAttribute("aria-label", name)
+        voiceButton.setAttribute("aria-pressed", "false")
+        voiceButton.addEventListener("click", () => {
+          voiceGroup.querySelectorAll(".voice-choice").forEach((button) => {
+            button.classList.remove("active")
+            button.setAttribute("aria-pressed", "false")
+          })
+          voiceButton.classList.add("active")
+          voiceButton.setAttribute("aria-pressed", "true")
+          playVoicePreview(frequency)
+        })
+        voiceGroup.appendChild(voiceButton)
+      })
+
+      robotContent.appendChild(voiceHeading)
+      robotContent.appendChild(voiceGroup)
       actionContent = robotContent
     } else if (page.id === "meg") {
       const textList = document.createElement("div")
@@ -308,8 +401,18 @@
       if (page.id === "eventer") list.classList.add("event-list")
 
       page.highlights.forEach((item) => {
-        const card = document.createElement("div")
+        const isEvent = page.id === "eventer"
+        const card = document.createElement(isEvent ? "button" : "div")
         card.className = "info-card"
+        if (isEvent) {
+          card.classList.add("event-card")
+          card.type = "button"
+          card.setAttribute("aria-pressed", "false")
+          card.addEventListener("click", () => {
+            const isActive = card.classList.toggle("active")
+            card.setAttribute("aria-pressed", String(isActive))
+          })
+        }
         card.textContent = item
         list.appendChild(card)
       })
