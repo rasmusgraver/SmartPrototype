@@ -34,6 +34,7 @@
 
   function renderLanding() {
     content.innerHTML = ""
+    renderTopNav(0, ["Home", ...steps.map((step) => step.navLabel)])
 
     const landing = document.createElement("div")
     landing.className = "landing-screen"
@@ -54,7 +55,7 @@
 
   function renderTopNav(
     activeIndex,
-    labels = steps.map((step) => step.navLabel),
+    labels = ["Home", ...steps.map((step) => step.navLabel)],
   ) {
     const nav = document.createElement("nav")
     nav.className = "top-nav"
@@ -67,10 +68,20 @@
       if (index === activeIndex) btn.classList.add("active")
       btn.textContent = label
       btn.addEventListener("click", () => {
-        const targetIndex = Math.min(index, steps.length)
-        currentStep = targetIndex
-        if (targetIndex >= steps.length) renderDone()
-        else renderStep()
+        if (index === 0) {
+          currentStep = -1
+          renderLanding()
+          return
+        }
+
+        if (index <= steps.length) {
+          currentStep = index - 1
+          renderStep()
+          return
+        }
+
+        currentStep = steps.length
+        renderDone()
       })
       nav.appendChild(btn)
     })
@@ -93,18 +104,10 @@
 
     const step = steps[currentStep]
     content.innerHTML = ""
-    renderTopNav(currentStep)
-
-    // Fremdriftsprikker
-    const dots = document.createElement("div")
-    dots.className = "progress-dots"
-    steps.forEach((s, i) => {
-      const d = document.createElement("div")
-      d.className =
-        "dot" + (i === currentStep ? " active" : i < currentStep ? " done" : "")
-      dots.appendChild(d)
-    })
-    content.appendChild(dots)
+    renderTopNav(currentStep + 1, [
+      "Home",
+      ...steps.map((step) => step.navLabel),
+    ])
 
     // Spørsmålstittel
     const title = document.createElement("p")
@@ -171,54 +174,12 @@
         className: "spacer",
       }),
     )
-
-    // Navigasjon
-    const navRow = document.createElement("div")
-    navRow.className = "nav-row"
-
-    const backBtn = document.createElement("button")
-    backBtn.className = "nav-btn nav-back"
-    backBtn.textContent = "Tilbake"
-    backBtn.disabled = currentStep === 0
-    backBtn.addEventListener("click", () => {
-      currentStep--
-      renderStep()
-    })
-
-    const nextBtn = document.createElement("button")
-    nextBtn.className = "nav-btn nav-next"
-    nextBtn.id = "next-btn"
-    nextBtn.textContent = currentStep === steps.length - 1 ? "Fullfør" : "Neste"
-    nextBtn.addEventListener("click", () => {
-      currentStep++
-      renderStep()
-    })
-
-    navRow.appendChild(backBtn)
-    navRow.appendChild(nextBtn)
-    content.appendChild(navRow)
-
-    updateNextButtonState()
-  }
-
-  function updateNextButtonState() {
-    const step = steps[currentStep]
-    const nextBtn = document.getElementById("next-btn")
-    if (!nextBtn) return
-
-    let answered = false
-    if (step.type === "choice") {
-      const a = answers[step.id]
-      answered = step.multi ? a && a.length > 0 : !!a
-    } else if (step.type === "text") {
-      answered = !!(answers[step.id] && answers[step.id].trim().length > 0)
-    }
-    nextBtn.disabled = !answered
   }
 
   function renderDone() {
     content.innerHTML = ""
-    renderTopNav(steps.length, [
+    renderTopNav(steps.length + 1, [
+      "Home",
       ...steps.map((step) => step.navLabel),
       "Oppsummering",
     ])
