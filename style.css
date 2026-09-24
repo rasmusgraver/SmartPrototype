@@ -136,7 +136,7 @@ body {
   flex: 1;
   border: none;
   background: transparent;
-  color: var(--muted);
+  color: #111111;
   border-radius: 0;
   padding: 8px 4px 7px;
   font-size: 9px;
@@ -154,13 +154,13 @@ body {
 }
 
 .top-nav-btn:hover {
-  color: var(--accent-dark);
-  background: rgba(47, 111, 79, 0.06);
+  color: #111111;
+  background: rgba(47, 111, 79, 0.1);
 }
 
 .top-nav-btn.active {
-  background: var(--accent);
-  color: white;
+  background: #d3b765;
+  color: #111111;
   box-shadow: none;
 }
 
