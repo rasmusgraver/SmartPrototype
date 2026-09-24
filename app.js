@@ -93,11 +93,31 @@
     hero.className = "page-hero"
 
     if (page.id === "home") {
-      const image = document.createElement("img")
-      image.src = "bilder/two_robots.png"
-      image.alt = "To roboter"
-      image.className = "page-hero-image"
-      hero.appendChild(image)
+      const homeGallery = document.createElement("div")
+      homeGallery.className = "home-gallery"
+
+      const robotImg = document.createElement("img")
+      robotImg.src = "bilder/robot.jpeg"
+      robotImg.alt = "Robot"
+      robotImg.className = "home-hero-image"
+
+      const droneImg = document.createElement("img")
+      droneImg.src = "bilder/drone.jpeg"
+      droneImg.alt = "Drone"
+      droneImg.className = "home-hero-image"
+
+      homeGallery.appendChild(robotImg)
+      homeGallery.appendChild(droneImg)
+      hero.appendChild(homeGallery)
+
+      const promoVideo = document.createElement("video")
+      promoVideo.className = "home-promo-video"
+      promoVideo.src = "bilder/smartPromo.mov"
+      promoVideo.controls = true
+      promoVideo.playsInline = true
+      promoVideo.preload = "metadata"
+      promoVideo.setAttribute("aria-label", "SmartPromo video")
+      hero.appendChild(promoVideo)
     } else {
       const badge = document.createElement("div")
       badge.className = "page-badge"
@@ -113,20 +133,23 @@
     desc.className = "page-description"
     desc.textContent = page.description
 
-    const list = document.createElement("div")
-    list.className = "info-list"
+    if (page.id !== "home") {
+      const list = document.createElement("div")
+      list.className = "info-list"
 
-    page.highlights.forEach((item) => {
-      const card = document.createElement("div")
-      card.className = "info-card"
-      card.textContent = item
-      list.appendChild(card)
-    })
+      page.highlights.forEach((item) => {
+        const card = document.createElement("div")
+        card.className = "info-card"
+        card.textContent = item
+        list.appendChild(card)
+      })
+
+      shell.appendChild(list)
+    }
 
     shell.appendChild(hero)
     shell.appendChild(title)
     shell.appendChild(desc)
-    shell.appendChild(list)
     content.appendChild(shell)
   }
 
