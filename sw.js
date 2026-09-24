@@ -1,11 +1,10 @@
-const CACHE_NAME = "friendly-helpers-v10"
+const CACHE_NAME = "friendly-helpers-v11"
 const APP_SHELL = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
   "./manifest.webmanifest",
-  "./icon.svg",
   "./bilder/logo.png",
   "./bilder/robot.jpeg",
   "./bilder/drone.jpeg",
