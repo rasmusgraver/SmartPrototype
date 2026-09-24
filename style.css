@@ -89,6 +89,57 @@ body {
   overflow-y: auto;
 }
 
+.landing-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+
+.landing-image {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  object-fit: contain;
+  cursor: pointer;
+  user-select: none;
+}
+
+.top-nav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.top-nav-btn {
+  flex: 1;
+  border: 1px solid var(--choice-border);
+  background: #f4f4f5;
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 7px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.top-nav-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.top-nav-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
 .progress-dots {
   display: flex;
   gap: 6px;

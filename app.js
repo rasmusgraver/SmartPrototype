@@ -3,6 +3,7 @@
   const steps = [
     {
       id: "frekvens",
+      navLabel: "Frekvens",
       type: "choice",
       multi: false,
       title: "Hvor ofte spiser du i løpet av en dag?",
@@ -10,6 +11,7 @@
     },
     {
       id: "maltider",
+      navLabel: "Måltider",
       type: "choice",
       multi: true,
       title: "Hvilke måltider spiser du vanligvis?",
@@ -17,6 +19,7 @@
     },
     {
       id: "favorittmat",
+      navLabel: "Favoritt",
       type: "text",
       title: "Hva er favorittmaten din?",
       placeholder: "Skriv svaret ditt her...",
@@ -24,12 +27,65 @@
   ]
 
   // --- State ---
-  let currentStep = 0
+  let currentStep = -1
   const answers = {} // holdes kun i minnet, ikke lagret noe sted
 
   const content = document.getElementById("app-content")
 
+  function renderLanding() {
+    content.innerHTML = ""
+
+    const landing = document.createElement("div")
+    landing.className = "landing-screen"
+
+    const image = document.createElement("img")
+    image.className = "landing-image"
+    image.src = "bilder/two_robots.png"
+    image.alt = "To roboter"
+    image.title = "Trykk for å starte"
+    image.addEventListener("click", () => {
+      currentStep = 0
+      renderStep()
+    })
+
+    landing.appendChild(image)
+    content.appendChild(landing)
+  }
+
+  function renderTopNav(
+    activeIndex,
+    labels = steps.map((step) => step.navLabel),
+  ) {
+    const nav = document.createElement("nav")
+    nav.className = "top-nav"
+    nav.setAttribute("aria-label", "Sidenavigasjon")
+
+    labels.forEach((label, index) => {
+      const btn = document.createElement("button")
+      btn.type = "button"
+      btn.className = "top-nav-btn"
+      if (index === activeIndex) btn.classList.add("active")
+      btn.textContent = label
+      btn.addEventListener("click", () => {
+        const targetIndex = Math.min(index, steps.length)
+        currentStep = targetIndex
+        if (targetIndex >= steps.length) renderDone()
+        else renderStep()
+      })
+      nav.appendChild(btn)
+    })
+
+    const existingNav = content.querySelector(".top-nav")
+    if (existingNav) existingNav.remove()
+    content.insertBefore(nav, content.firstChild)
+  }
+
   function renderStep() {
+    if (currentStep === -1) {
+      renderLanding()
+      return
+    }
+
     if (currentStep >= steps.length) {
       renderDone()
       return
@@ -37,6 +93,7 @@
 
     const step = steps[currentStep]
     content.innerHTML = ""
+    renderTopNav(currentStep)
 
     // Fremdriftsprikker
     const dots = document.createElement("div")
@@ -161,6 +218,10 @@
 
   function renderDone() {
     content.innerHTML = ""
+    renderTopNav(steps.length, [
+      ...steps.map((step) => step.navLabel),
+      "Oppsummering",
+    ])
 
     const wrap = document.createElement("div")
     wrap.className = "done-screen"
@@ -196,15 +257,15 @@
     backBtn.className = "nav-btn nav-back done-back"
     backBtn.textContent = "Tilbake til start"
     backBtn.addEventListener("click", () => {
-      currentStep = 0
-      renderStep()
+      currentStep = -1
+      renderLanding()
     })
     wrap.appendChild(backBtn)
 
     content.appendChild(wrap)
   }
 
-  renderStep()
+  renderLanding()
 })()
 
 if ("serviceWorker" in navigator) {

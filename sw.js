@@ -6,7 +6,6 @@ const APP_SHELL = [
   "./app.js",
   "./manifest.webmanifest",
   "./icon.svg",
-  "./iphone_transparent2.png",
 ]
 
 const OFFLINE_NAV = "./index.html"
