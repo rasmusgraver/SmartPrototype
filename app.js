@@ -339,7 +339,7 @@
         ["Stemme 1", "🔈", "lyd/Stemme 1.m4a"],
         ["Stemme 2", "🔉", "lyd/Stemme 2.m4a"],
         ["Stemme 3", "🔊", "lyd/Stemme 3.m4a"],
-        ["Stemme 4", "📢", "lyd/Stemme 4.m4a"],
+        ["Stemme 4", "🔊", "lyd/Stemme 4.m4a"],
       ]
 
       voiceOptions.forEach(([name, icon, source]) => {

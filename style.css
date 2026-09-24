@@ -409,6 +409,10 @@ body {
 }
 
 .voice-choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 46px;
   width: 46px;
   height: 42px;
   padding: 0;
