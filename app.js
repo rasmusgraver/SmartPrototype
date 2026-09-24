@@ -165,7 +165,7 @@
 
       const promoVideo = document.createElement("video")
       promoVideo.className = "home-promo-video"
-      promoVideo.src = "bilder/smartPromo.mov"
+      promoVideo.src = "bilder/smartPromo.mp4"
       promoVideo.controls = true
       promoVideo.playsInline = true
       promoVideo.preload = "metadata"
