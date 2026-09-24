@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "SmartPrototype",
-  "short_name": "SmartPrototype",
+  "name": "The Friendly Helpers",
+  "short_name": "Friendly Helpers",
   "description": "En prototype for robot- og droneassistanse.",
   "lang": "no",
   "start_url": "./",
@@ -12,10 +12,10 @@
   "background_color": "#f6f2e7",
   "icons": [
     {
-      "src": "icon.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "bilder/logo.png",
+      "sizes": "892x826",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

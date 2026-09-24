@@ -1,4 +1,4 @@
-const CACHE_NAME = "smartprototype-v6"
+const CACHE_NAME = "friendly-helpers-v7"
 const APP_SHELL = [
   "./",
   "./index.html",
